@@ -10,20 +10,34 @@ import (
 // ============================================================================
 
 func main() {
-	fmt.Println("=== DEMONSTRAÇÃO DE ESTRUTURAS DE DADOS ===\n")
+	fmt.Println("=== DEMONSTRAÇÃO DE ESTRUTURAS DE DADOS ==="\n")
 	
 	// Demonstrações básicas
 	demonstrateArrayList()
 	demonstrateLinkedList()
 	
+	// Demonstrações de pilhas
+	demonstrateArrayStack()
+	demonstrateLinkedStack()
+	
+	// Demonstrações de filas
+	demonstrateArrayQueue()
+	demonstrateLinkedQueue()
+	
 	// Comparação de performance
 	comparePerformance()
+	compareStackPerformance()
+	compareQueuePerformance()
 	
 	// Demonstração da interface
 	demonstrateInterface()
+	demonstrateStackInterface()
+	demonstrateQueueInterface()
 	
 	// Algoritmos usando a interface
 	demonstrateAlgorithms()
+	demonstrateStackAlgorithms()
+	demonstrateQueueAlgorithms()
 }
 
 // ============================================================================
@@ -77,6 +91,295 @@ func demonstrateArrayList() {
 	fmt.Println("\nAdicionando elementos em lote...")
 	al.AddAll([]int{100, 200, 300})
 	fmt.Printf("Após AddAll: %s\n", al.String())
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// DEMONSTRAÇÃO ARRAYQUEUE
+// ============================================================================
+
+func demonstrateArrayQueue() {
+	fmt.Println("=== DEMONSTRAÇÃO ARRAYQUEUE ===")
+	
+	// Criação e inicialização
+	aq := NewArrayQueue(5)
+	fmt.Printf("ArrayQueue criado com capacidade: %d\n", aq.Capacity())
+	
+	// Adicionando elementos (Enqueue)
+	fmt.Println("\nAdicionando elementos de 1 a 8...")
+	for i := 1; i <= 8; i++ {
+		aq.Enqueue(i)
+		fmt.Printf("Enqueue %d: %s\n", i, aq.String())
+	}
+	fmt.Printf("Tamanho: %d, Capacidade: %d\n", aq.Size(), aq.Capacity())
+	
+	// Testando Front e Rear
+	fmt.Println("\nTestando Front e Rear:")
+	front, _ := aq.Front()
+	rear, _ := aq.Rear()
+	fmt.Printf("Elemento na frente: %d\n", front)
+	fmt.Printf("Elemento no final: %d\n", rear)
+	
+	// Removendo elementos (Dequeue)
+	fmt.Println("\nRemovendo 3 elementos:")
+	for i := 0; i < 3; i++ {
+		value, err := aq.Dequeue()
+		if err == nil {
+			fmt.Printf("Dequeue: %d, Fila: %s\n", value, aq.String())
+		}
+	}
+	
+	// Testando operações auxiliares
+	fmt.Println("\nOperações auxiliares:")
+	fmt.Printf("Contém 5? %t\n", aq.Contains(5))
+	fmt.Printf("Índice do 5: %d\n", aq.IndexOf(5))
+	fmt.Printf("ToSlice: %v\n", aq.ToSlice())
+	
+	// Testando rotação
+	fmt.Println("\nTestando rotação (2 posições):")
+	fmt.Printf("Antes: %s\n", aq.String())
+	aq.Rotate(2)
+	fmt.Printf("Depois: %s\n", aq.String())
+	
+	// Estatísticas
+	fmt.Println("\nEstatísticas:")
+	stats := aq.GetStatistics()
+	for key, value := range stats {
+		fmt.Printf("%s: %v\n", key, value)
+	}
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// DEMONSTRAÇÃO LINKEDQUEUE
+// ============================================================================
+
+func demonstrateLinkedQueue() {
+	fmt.Println("=== DEMONSTRAÇÃO LINKEDQUEUE ===")
+	
+	// Criação
+	lq := NewLinkedQueue()
+	fmt.Println("LinkedQueue criado")
+	
+	// Adicionando elementos
+	fmt.Println("\nAdicionando elementos de 10 a 16...")
+	for i := 10; i <= 16; i++ {
+		lq.Enqueue(i)
+		fmt.Printf("Enqueue %d: %s\n", i, lq.String())
+	}
+	
+	// Testando operações
+	fmt.Println("\nTestando operações:")
+	front, _ := lq.Front()
+	rear, _ := lq.Rear()
+	fmt.Printf("Frente: %d, Final: %d\n", front, rear)
+	fmt.Printf("Tamanho: %d\n", lq.Size())
+	fmt.Printf("Vazia? %t\n", lq.IsEmpty())
+	
+	// Clonando fila
+	fmt.Println("\nClonando fila:")
+	clone := lq.Clone()
+	fmt.Printf("Original: %s\n", lq.String())
+	fmt.Printf("Clone: %s\n", clone.String())
+	fmt.Printf("São iguais? %t\n", lq.Equals(clone))
+	
+	// Removendo alguns elementos
+	fmt.Println("\nRemovendo 4 elementos:")
+	for i := 0; i < 4; i++ {
+		value, _ := lq.Dequeue()
+		fmt.Printf("Dequeue: %d, Fila: %s\n", value, lq.String())
+	}
+	
+	// Testando métodos avançados
+	fmt.Println("\nMétodos avançados:")
+	filtered := lq.Filter(func(x int) bool { return x%2 == 0 })
+	fmt.Printf("Elementos pares: %s\n", filtered.String())
+	
+	mapped := lq.Map(func(x int) int { return x * 2 })
+	fmt.Printf("Elementos dobrados: %s\n", mapped.String())
+	
+	sum := lq.Reduce(func(acc, x int) int { return acc + x }, 0)
+	fmt.Printf("Soma dos elementos: %d\n", sum)
+	
+	// Testando split
+	fmt.Println("\nTestando split no índice 1:")
+	first, second := lq.Split(1)
+	fmt.Printf("Primeira parte: %s\n", first.String())
+	fmt.Printf("Segunda parte: %s\n", second.String())
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// COMPARAÇÃO DE PERFORMANCE - QUEUES
+// ============================================================================
+
+func compareQueuePerformance() {
+	fmt.Println("=== COMPARAÇÃO DE PERFORMANCE - QUEUES ===")
+	
+	const numOperations = 100000
+	
+	fmt.Printf("Testando %d operações Enqueue/Dequeue...\n\n", numOperations)
+	
+	// ArrayQueue
+	fmt.Println("ArrayQueue:")
+	benchmarkFunction("  Enqueue", func() {
+		aq := NewArrayQueue(10)
+		for i := 0; i < numOperations; i++ {
+			aq.Enqueue(i)
+		}
+	})
+	
+	benchmarkFunction("  Enqueue+Dequeue", func() {
+		aq := NewArrayQueue(10)
+		for i := 0; i < numOperations; i++ {
+			aq.Enqueue(i)
+		}
+		for i := 0; i < numOperations; i++ {
+			aq.Dequeue()
+		}
+	})
+	
+	// LinkedQueue
+	fmt.Println("\nLinkedQueue:")
+	benchmarkFunction("  Enqueue", func() {
+		lq := NewLinkedQueue()
+		for i := 0; i < numOperations; i++ {
+			lq.Enqueue(i)
+		}
+	})
+	
+	benchmarkFunction("  Enqueue+Dequeue", func() {
+		lq := NewLinkedQueue()
+		for i := 0; i < numOperations; i++ {
+			lq.Enqueue(i)
+		}
+		for i := 0; i < numOperations; i++ {
+			lq.Dequeue()
+		}
+	})
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// DEMONSTRAÇÃO DA INTERFACE QUEUE
+// ============================================================================
+
+func demonstrateQueueInterface() {
+	fmt.Println("=== DEMONSTRAÇÃO DA INTERFACE QUEUE ===")
+	
+	// Criando diferentes implementações
+	var queues []Queue
+	queues = append(queues, NewArrayQueue(5))
+	queues = append(queues, NewLinkedQueue())
+	
+	names := []string{"ArrayQueue", "LinkedQueue"}
+	
+	// Testando polimorfismo
+	for i, queue := range queues {
+		fmt.Printf("\nTestando %s:\n", names[i])
+		
+		// Adicionando elementos
+		for j := 1; j <= 5; j++ {
+			queue.Enqueue(j * 10)
+		}
+		
+		PrintQueue(queue, names[i])
+		
+		// Testando operações
+		front, _ := queue.Front()
+		rear, _ := queue.Rear()
+		fmt.Printf("Frente: %d, Final: %d\n", front, rear)
+		
+		// Removendo elementos
+		for j := 0; j < 2; j++ {
+			value, _ := queue.Dequeue()
+			fmt.Printf("Removido: %d\n", value)
+		}
+		
+		PrintQueue(queue, names[i])
+	}
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// ALGORITMOS USANDO QUEUES
+// ============================================================================
+
+func demonstrateQueueAlgorithms() {
+	fmt.Println("=== ALGORITMOS USANDO QUEUES ===")
+	
+	// 1. Geração de números binários
+	fmt.Println("\n1. Geração de Números Binários (1 a 10):")
+	binaryNumbers := GenerateBinaryNumbers(10)
+	for i, binary := range binaryNumbers {
+		fmt.Printf("%d -> %s\n", i+1, binary)
+	}
+	
+	// 2. Busca em largura (simulação)
+	fmt.Println("\n2. Busca em Largura (árvore como array):")
+	tree := []int{1, 2, 3, 4, 5, 6, 7} // Árvore binária completa
+	traversal := LevelOrderTraversal(tree)
+	fmt.Printf("Árvore: %v\n", tree)
+	fmt.Printf("Travessia em largura: %v\n", traversal)
+	
+	// 3. Primeiro caractere não repetido
+	fmt.Println("\n3. Primeiro Caractere Não Repetido:")
+	streams := []string{"abccba", "abcabc", "aabc"}
+	for _, stream := range streams {
+		result := FirstNonRepeatingCharacter(stream)
+		fmt.Printf("Stream: %s\n", stream)
+		fmt.Print("Resultado: ")
+		for _, char := range result {
+			if char == 0 {
+				fmt.Print("- ")
+			} else {
+				fmt.Printf("%c ", char)
+			}
+		}
+		fmt.Println()
+	}
+	
+	// 4. Rotação de fila
+	fmt.Println("\n4. Rotação de Fila:")
+	queue := NewArrayQueue(10)
+	for i := 1; i <= 6; i++ {
+		queue.Enqueue(i)
+	}
+	fmt.Printf("Original: %s\n", queue.String())
+	
+	RotateQueue(queue, 2)
+	fmt.Printf("Após rotação de 2: %s\n", queue.String())
+	
+	// 5. Intercalar fila
+	fmt.Println("\n5. Intercalar Fila:")
+	queue2 := NewLinkedQueue()
+	for i := 1; i <= 6; i++ {
+		queue2.Enqueue(i)
+	}
+	fmt.Printf("Antes de intercalar: %s\n", queue2.String())
+	
+	InterleaveQueue(queue2)
+	fmt.Printf("Após intercalar: %s\n", queue2.String())
+	
+	// 6. Estatísticas da fila
+	fmt.Println("\n6. Estatísticas da Fila:")
+	queue3 := NewArrayQueue(10)
+	for i := 10; i <= 50; i += 10 {
+		queue3.Enqueue(i)
+	}
+	fmt.Printf("Fila: %s\n", queue3.String())
+	
+	max, _ := QueueMax(queue3)
+	min, _ := QueueMin(queue3)
+	sum := QueueSum(queue3)
+	fmt.Printf("Máximo: %d\n", max)
+	fmt.Printf("Mínimo: %d\n", min)
+	fmt.Printf("Soma: %d\n", sum)
 	
 	fmt.Println()
 }
@@ -386,4 +689,276 @@ func benchmarkFunction(name string, fn func()) {
 	fn()
 	duration := time.Since(start)
 	fmt.Printf("%s: %v\n", name, duration)
+}
+
+// ============================================================================
+// DEMONSTRAÇÃO ARRAYSTACK
+// ============================================================================
+
+func demonstrateArrayStack() {
+	fmt.Println("=== DEMONSTRAÇÃO ARRAYSTACK ===")
+	
+	// Criação e inicialização
+	as := NewArrayStack(5)
+	fmt.Printf("ArrayStack criado com capacidade: %d\n", as.Capacity())
+	
+	// Adicionando elementos (Push)
+	fmt.Println("\nAdicionando elementos de 1 a 8...")
+	for i := 1; i <= 8; i++ {
+		as.Push(i)
+		fmt.Printf("Push %d: %s\n", i, as.String())
+	}
+	fmt.Printf("Tamanho: %d, Capacidade: %d\n", as.Size(), as.Capacity())
+	
+	// Testando Peek
+	fmt.Println("\nTestando Peek:")
+	top, err := as.Peek()
+	if err == nil {
+		fmt.Printf("Elemento no topo: %d\n", top)
+	}
+	
+	// Removendo elementos (Pop)
+	fmt.Println("\nRemovendo 3 elementos:")
+	for i := 0; i < 3; i++ {
+		value, err := as.Pop()
+		if err == nil {
+			fmt.Printf("Pop: %d, Pilha: %s\n", value, as.String())
+		}
+	}
+	
+	// Testando operações auxiliares
+	fmt.Println("\nOperações auxiliares:")
+	fmt.Printf("Contém 3? %t\n", as.Contains(3))
+	fmt.Printf("Posição do 3: %d\n", as.Search(3))
+	fmt.Printf("ToSlice: %v\n", as.ToSlice())
+	
+	// Estatísticas
+	fmt.Println("\nEstatísticas:")
+	stats := as.GetStatistics()
+	for key, value := range stats {
+		fmt.Printf("%s: %v\n", key, value)
+	}
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// DEMONSTRAÇÃO LINKEDSTACK
+// ============================================================================
+
+func demonstrateLinkedStack() {
+	fmt.Println("=== DEMONSTRAÇÃO LINKEDSTACK ===")
+	
+	// Criação
+	ls := NewLinkedStack()
+	fmt.Println("LinkedStack criado")
+	
+	// Adicionando elementos
+	fmt.Println("\nAdicionando elementos de 10 a 16...")
+	for i := 10; i <= 16; i++ {
+		ls.Push(i)
+		fmt.Printf("Push %d: %s\n", i, ls.String())
+	}
+	
+	// Testando operações
+	fmt.Println("\nTestando operações:")
+	top, _ := ls.Peek()
+	fmt.Printf("Topo: %d\n", top)
+	fmt.Printf("Tamanho: %d\n", ls.Size())
+	fmt.Printf("Vazia? %t\n", ls.IsEmpty())
+	
+	// Clonando pilha
+	fmt.Println("\nClonando pilha:")
+	clone := ls.Clone()
+	fmt.Printf("Original: %s\n", ls.String())
+	fmt.Printf("Clone: %s\n", clone.String())
+	fmt.Printf("São iguais? %t\n", ls.Equals(clone))
+	
+	// Removendo alguns elementos
+	fmt.Println("\nRemovendo 4 elementos:")
+	for i := 0; i < 4; i++ {
+		value, _ := ls.Pop()
+		fmt.Printf("Pop: %d, Pilha: %s\n", value, ls.String())
+	}
+	
+	// Testando métodos avançados
+	fmt.Println("\nMétodos avançados:")
+	filtered := ls.Filter(func(x int) bool { return x%2 == 0 })
+	fmt.Printf("Elementos pares: %s\n", filtered.String())
+	
+	mapped := ls.Map(func(x int) int { return x * 2 })
+	fmt.Printf("Elementos dobrados: %s\n", mapped.String())
+	
+	sum := ls.Reduce(func(acc, x int) int { return acc + x }, 0)
+	fmt.Printf("Soma dos elementos: %d\n", sum)
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// COMPARAÇÃO DE PERFORMANCE - STACKS
+// ============================================================================
+
+func compareStackPerformance() {
+	fmt.Println("=== COMPARAÇÃO DE PERFORMANCE - STACKS ===")
+	
+	const numOperations = 100000
+	
+	fmt.Printf("Testando %d operações Push/Pop...\n\n", numOperations)
+	
+	// ArrayStack
+	fmt.Println("ArrayStack:")
+	benchmarkFunction("  Push", func() {
+		as := NewArrayStack(10)
+		for i := 0; i < numOperations; i++ {
+			as.Push(i)
+		}
+	})
+	
+	benchmarkFunction("  Push+Pop", func() {
+		as := NewArrayStack(10)
+		for i := 0; i < numOperations; i++ {
+			as.Push(i)
+		}
+		for i := 0; i < numOperations; i++ {
+			as.Pop()
+		}
+	})
+	
+	// LinkedStack
+	fmt.Println("\nLinkedStack:")
+	benchmarkFunction("  Push", func() {
+		ls := NewLinkedStack()
+		for i := 0; i < numOperations; i++ {
+			ls.Push(i)
+		}
+	})
+	
+	benchmarkFunction("  Push+Pop", func() {
+		ls := NewLinkedStack()
+		for i := 0; i < numOperations; i++ {
+			ls.Push(i)
+		}
+		for i := 0; i < numOperations; i++ {
+			ls.Pop()
+		}
+	})
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// DEMONSTRAÇÃO DA INTERFACE STACK
+// ============================================================================
+
+func demonstrateStackInterface() {
+	fmt.Println("=== DEMONSTRAÇÃO DA INTERFACE STACK ===")
+	
+	// Criando diferentes implementações
+	var stacks []Stack
+	stacks = append(stacks, NewArrayStack(5))
+	stacks = append(stacks, NewLinkedStack())
+	
+	names := []string{"ArrayStack", "LinkedStack"}
+	
+	// Testando polimorfismo
+	for i, stack := range stacks {
+		fmt.Printf("\nTestando %s:\n", names[i])
+		
+		// Adicionando elementos
+		for j := 1; j <= 5; j++ {
+			stack.Push(j * 10)
+		}
+		
+		PrintStack(stack, names[i])
+		
+		// Testando operações
+		top, _ := stack.Peek()
+		fmt.Printf("Topo: %d\n", top)
+		
+		// Removendo elementos
+		for j := 0; j < 2; j++ {
+			value, _ := stack.Pop()
+			fmt.Printf("Removido: %d\n", value)
+		}
+		
+		PrintStack(stack, names[i])
+	}
+	
+	fmt.Println()
+}
+
+// ============================================================================
+// ALGORITMOS USANDO STACKS
+// ============================================================================
+
+func demonstrateStackAlgorithms() {
+	fmt.Println("=== ALGORITMOS USANDO STACKS ===")
+	
+	// 1. Verificação de parênteses balanceados
+	fmt.Println("\n1. Verificação de Parênteses Balanceados:")
+	testCases := []string{
+		"()",
+		"()[]{}",
+		"([{}])",
+		"([)]",
+		"(((",
+		")))",
+	}
+	
+	for _, test := range testCases {
+		result := IsValidParentheses(test)
+		fmt.Printf("'%s' -> %t\n", test, result)
+	}
+	
+	// 2. Avaliação de expressão pós-fixa
+	fmt.Println("\n2. Avaliação de Expressão Pós-fixa:")
+	postfixExpressions := [][]string{
+		{"3", "4", "+"},                    // 3 + 4 = 7
+		{"3", "4", "+", "2", "*"},          // (3 + 4) * 2 = 14
+		{"15", "7", "1", "1", "+", "-", "/", "3", "*", "2", "1", "1", "+", "+", "-"}, // Complexa
+	}
+	
+	for _, expr := range postfixExpressions {
+		result, err := EvaluatePostfix(expr)
+		if err == nil {
+			fmt.Printf("%v -> %d\n", expr, result)
+		} else {
+			fmt.Printf("%v -> Erro: %v\n", expr, err)
+		}
+	}
+	
+	// 3. Inversão usando pilha
+	fmt.Println("\n3. Inversão usando Pilha:")
+	original := NewArrayStack(10)
+	for i := 1; i <= 5; i++ {
+		original.Push(i)
+	}
+	fmt.Printf("Original: %s\n", original.String())
+	
+	ReverseStack(original)
+	fmt.Printf("Invertida: %s\n", original.String())
+	
+	// 4. Busca em pilha
+	fmt.Println("\n4. Busca em Pilha:")
+	stack := NewLinkedStack()
+	for i := 10; i <= 50; i += 10 {
+		stack.Push(i)
+	}
+	fmt.Printf("Pilha: %s\n", stack.String())
+	
+	targets := []int{30, 60, 10}
+	for _, target := range targets {
+		found := FindInStack(stack, target)
+		fmt.Printf("Buscar %d: %t\n", target, found)
+	}
+	
+	// 5. Estatísticas da pilha
+	fmt.Println("\n5. Estatísticas da Pilha:")
+	max, _ := StackMax(stack)
+	sum := StackSum(stack)
+	fmt.Printf("Máximo: %d\n", max)
+	fmt.Printf("Soma: %d\n", sum)
+	
+	fmt.Println()
 }

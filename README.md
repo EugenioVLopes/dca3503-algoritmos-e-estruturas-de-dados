@@ -2,7 +2,7 @@
 
 ## 📚 Sobre este Diretório
 
-Este diretório contém material de estudo organizado para a disciplina **DCA3503 - Algoritmos e Estruturas de Dados**, focando especificamente em **Listas** como estrutura de dados fundamental.
+Este diretório contém material de estudo organizado para a disciplina **DCA3503 - Algoritmos e Estruturas de Dados**, focando em estruturas de dados fundamentais como **Listas**, **Pilhas** e **Filas**.
 
 ## 🗂️ Organização dos Arquivos
 
@@ -39,31 +39,93 @@ Este diretório contém material de estudo organizado para a disciplina **DCA350
    - Árvore de decisão para escolha
    - Implementações híbridas
 
+5. **[06_stack_adt.md](06_stack_adt.md)** - Pilhas (Stacks)
+   - Conceitos fundamentais de pilhas (LIFO)
+   - Interface Stack e operações básicas
+   - Comparação entre ArrayStack e LinkedStack
+   - Aplicações práticas (parênteses balanceados, expressões pós-fixas)
+   - Algoritmos e padrões de uso
+
+6. **[07_queue_adt.md](07_queue_adt.md)** - Filas (Queues)
+   - Conceitos fundamentais de filas (FIFO)
+   - Interface Queue e operações básicas
+   - Comparação entre ArrayQueue (circular) e LinkedQueue
+   - Aplicações práticas (BFS, geração de números binários, sistemas)
+   - Algoritmos clássicos e padrões de uso
+
 ### 💻 **Implementações em Go**
 
-5. **[list_interface.go](list_interface.go)** - Interface e Utilitários
+#### **Listas**
+
+6. **[list_interface.go](list_interface.go)** - Interface e Utilitários
 
    - Definição da interface `List`
    - Funções utilitárias que trabalham com a interface
    - Algoritmos genéricos (busca, ordenação, etc.)
 
-6. **[arraylist.go](arraylist.go)** - Implementação ArrayList
+7. **[arraylist.go](arraylist.go)** - Implementação ArrayList
 
    - Implementação completa da estrutura ArrayList
    - Todos os métodos com comentários detalhados
    - Operações otimizadas (AddAll, TrimToSize, etc.)
 
-7. **[linkedlist.go](linkedlist.go)** - Implementação LinkedList
+8. **[linkedlist.go](linkedlist.go)** - Implementação LinkedList
 
    - Implementação completa da estrutura LinkedList
    - Algoritmos especiais (Reverse, GetMiddle, etc.)
    - Detecção de ciclos e remoção de duplicatas
 
-8. **[main.go](main.go)** - Demonstrações e Testes
-   - Exemplos práticos de uso
-   - Comparações de performance
+#### **Pilhas**
+
+9. **[stack_interface.go](stack_interface.go)** - Interface Stack e Utilitários
+
+   - Definição da interface `Stack`
+   - Funções utilitárias para manipulação de pilhas
+   - Algoritmos clássicos (parênteses balanceados, expressões pós-fixas)
+   - Operações avançadas (inversão, busca, estatísticas)
+
+10. **[arraystack.go](arraystack.go)** - Implementação ArrayStack
+
+    - Pilha baseada em array dinâmico
+    - Redimensionamento automático
+    - Operações O(1) amortizadas
+    - Métodos de análise e estatísticas
+
+11. **[linkedstack.go](linkedstack.go)** - Implementação LinkedStack
+
+     - Pilha baseada em lista ligada
+     - Operações sempre O(1)
+     - Métodos funcionais (Map, Filter, Reduce)
+     - Flexibilidade total de tamanho
+
+#### **Filas**
+
+12. **[queue_interface.go](queue_interface.go)** - Interface Queue e Utilitários
+
+    - Definição da interface `Queue`
+    - Funções utilitárias para manipulação de filas
+    - Algoritmos clássicos (BFS, geração binária, caractere não repetido)
+    - Operações avançadas (rotação, intercalação, estatísticas)
+
+13. **[arrayqueue.go](arrayqueue.go)** - Implementação ArrayQueue
+
+    - Fila baseada em array circular
+    - Operações O(1) para enqueue/dequeue
+    - Redimensionamento automático
+    - Uso eficiente de espaço (reutiliza posições)
+
+14. **[linkedqueue.go](linkedqueue.go)** - Implementação LinkedQueue
+
+    - Fila baseada em lista ligada
+    - Operações sempre O(1)
+    - Métodos funcionais (Map, Filter, Reduce, Partition)
+    - Flexibilidade total de tamanho
+
+15. **[main.go](main.go)** - Demonstrações e Testes
+   - Exemplos práticos de uso de listas, pilhas e filas
+   - Comparações de performance entre implementações
    - Demonstração da interface polimórfica
-   - Algoritmos usando as estruturas
+   - Algoritmos clássicos usando as estruturas
 
 ### 📁 **Arquivos Legados**
 
@@ -80,8 +142,17 @@ Este diretório contém material de estudo organizado para a disciplina **DCA350
 
 ### **Pré-requisitos:**
 
-- Go 1.19 ou superior instalado
-- Terminal/Command Prompt
+#### **Instalação do Go:**
+
+1. **Windows:**
+   - Baixe o instalador em: https://golang.org/dl/
+   - Execute o instalador e siga as instruções
+   - Reinicie o terminal após a instalação
+
+2. **Verificar instalação:**
+   ```bash
+   go version
+   ```
 
 ### **Executando o código:**
 
@@ -89,24 +160,29 @@ Este diretório contém material de estudo organizado para a disciplina **DCA350
 # Navegar para o diretório
 cd "c:\Users\Mateus\Downloads\dca3503-algoritmos-e-estruturas-de-dados"
 
-# Executar demonstrações
+# Executar todas as demonstrações (listas, pilhas e filas)
 go run *.go
 
 # Ou executar arquivos específicos
-go run main.go arraylist.go linkedlist.go list_interface.go
+go run main.go list_interface.go arraylist.go linkedlist.go stack_interface.go arraystack.go linkedstack.go queue_interface.go arrayqueue.go linkedqueue.go
 ```
 
-### **Testando implementações:**
+### **Executando demonstrações específicas:**
 
 ```bash
-# Testar apenas ArrayList
-go run arraylist.go list_interface.go -test arraylist
+# Apenas listas
+go run main.go list_interface.go arraylist.go linkedlist.go
 
-# Testar apenas LinkedList
-go run linkedlist.go list_interface.go -test linkedlist
+# Apenas pilhas
+go run main.go stack_interface.go arraystack.go linkedstack.go
+
+# Apenas filas
+go run main.go queue_interface.go arrayqueue.go linkedqueue.go
 ```
 
 ## 📊 **Resumo de Complexidades**
+
+### **Listas**
 
 | Operação            | ArrayList | LinkedList | Melhor Para |
 | ------------------- | --------- | ---------- | ----------- |
@@ -117,6 +193,37 @@ go run linkedlist.go list_interface.go -test linkedlist
 | **Remoção início**  | O(n)      | O(1)       | LinkedList  |
 | **Busca**           | O(n)      | O(n)       | Empate      |
 | **Uso memória**     | Médio     | Alto       | ArrayList   |
+
+### **Pilhas**
+
+| Operação        | ArrayStack    | LinkedStack | Melhor Para   |
+| --------------- | ------------- | ----------- | ------------- |
+| **Push**        | O(1)\*        | O(1)        | LinkedStack   |
+| **Pop**         | O(1)          | O(1)        | Empate        |
+| **Peek**        | O(1)          | O(1)        | Empate        |
+| **Size**        | O(1)          | O(1)        | Empate        |
+| **IsEmpty**     | O(1)          | O(1)        | Empate        |
+| **Uso memória** | Mais eficiente| Overhead ptr | ArrayStack    |
+| **Cache**       | Melhor        | Pior        | ArrayStack    |
+| **Flexibilidade**| Limitada     | Total       | LinkedStack   |
+
+*\* O(1) amortizado para ArrayStack devido ao redimensionamento*
+
+### **Filas**
+
+| Operação        | ArrayQueue    | LinkedQueue | Melhor Para   |
+| --------------- | ------------- | ----------- | ------------- |
+| **Enqueue**     | O(1)\*        | O(1)        | LinkedQueue   |
+| **Dequeue**     | O(1)          | O(1)        | Empate        |
+| **Front**       | O(1)          | O(1)        | Empate        |
+| **Rear**        | O(1)          | O(1)        | Empate        |
+| **Size**        | O(1)          | O(1)        | Empate        |
+| **IsEmpty**     | O(1)          | O(1)        | Empate        |
+| **Uso memória** | Mais eficiente| Overhead ptr | ArrayQueue    |
+| **Cache**       | Melhor        | Pior        | ArrayQueue    |
+| **Flexibilidade**| Limitada     | Total       | LinkedQueue   |
+
+*\* O(1) amortizado para ArrayQueue devido ao redimensionamento*
 
 \*Amortizado
 
