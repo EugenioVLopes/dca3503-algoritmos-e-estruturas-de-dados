@@ -1,3 +1,3 @@
-module dca3503-algoritmos-estruturas-dados
+module dca3503
 
 go 1.19
