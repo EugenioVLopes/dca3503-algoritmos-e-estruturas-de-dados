@@ -1,7 +1,6 @@
 package list
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -12,15 +11,15 @@ import (
 // Node representa um nó na lista ligada
 // Cada nó contém um valor e um ponteiro para o próximo nó
 type Node struct {
-	val  int   // Valor armazenado no nó
-	next *Node // Ponteiro para o próximo nó (nil se for o último)
+	value int   // Valor armazenado no nó
+	next  *Node // Ponteiro para o próximo nó (nil se for o último)
 }
 
 // NewNode cria um novo nó com o valor especificado
 func NewNode(value int) *Node {
 	return &Node{
-		val:  value,
-		next: nil,
+		value: value,
+		next:  nil,
 	}
 }
 
@@ -31,22 +30,22 @@ func NewNode(value int) *Node {
 // - Uso dinâmico de memória (aloca conforme necessário)
 // - Não há desperdício de memória
 type LinkedList struct {
-	head     *Node // Ponteiro para o primeiro nó
-	inserted int   // Contador de elementos (para Size() em O(1))
+	head   *Node // Ponteiro para o primeiro nó
+	size   int   // Contador de elementos (para Size() em O(1))
 }
 
 // NewLinkedList cria uma nova instância de LinkedList
 func NewLinkedList() *LinkedList {
 	return &LinkedList{
-		head:     nil,
-		inserted: 0,
+		head: nil,
+		size: 0,
 	}
 }
 
 // Size retorna o número de elementos na lista
 // Complexidade: Θ(1) - Mantemos um contador
 func (list *LinkedList) Size() int { // Θ(1)
-	return list.inserted
+	return list.size
 }
 
 // IsEmpty verifica se a lista está vazia
@@ -62,30 +61,30 @@ func (list *LinkedList) IsEmpty() bool {
 // 2. Percorrer lista do início até a posição desejada
 // 3. Retornar valor do nó encontrado
 func (list *LinkedList) Get(index int) (int, error) { // O(n), Ω(1)
-	if index >= 0 && index < list.inserted {
+	if index >= 0 && index < list.size {
 		aux := list.head
 		// Percorre a lista até a posição desejada
 		for i := 0; i < index; i++ {
 			aux = aux.next
 		}
-		return aux.val, nil
+		return aux.value, nil
 	} else {
-		return -1, errors.New(fmt.Sprintf("Index inválido: %d", index))
+		return -1, fmt.Errorf("index inválido: %d", index)
 	}
 }
 
 // Set define o valor do elemento na posição especificada
 // Complexidade: O(n)
 func (list *LinkedList) Set(index int, value int) error {
-	if index >= 0 && index < list.inserted {
+	if index >= 0 && index < list.size {
 		aux := list.head
 		for i := 0; i < index; i++ {
 			aux = aux.next
 		}
-		aux.val = value
+		aux.value = value
 		return nil
 	} else {
-		return errors.New(fmt.Sprintf("Index inválido: %d", index))
+		return fmt.Errorf("index inválido: %d", index)
 	}
 }
 
@@ -100,7 +99,7 @@ func (list *LinkedList) AddFirst(val int) {
 	newNode := NewNode(val)
 	newNode.next = list.head
 	list.head = newNode
-	list.inserted++
+	list.size++
 }
 
 // Add adiciona elemento no final da lista
@@ -114,8 +113,7 @@ func (list *LinkedList) Add(val int) {
 	newNode := NewNode(val)
 	
 	if list.head == nil {
-		// Lista vazia - novo nó vira o primeiro
-		list.head = newNode
+		list.head = newNode // Lista vazia - novo nó vira o primeiro
 	} else {
 		// Percorre até o último nó
 		aux := list.head
@@ -125,7 +123,7 @@ func (list *LinkedList) Add(val int) {
 		// Conecta novo nó ao final
 		aux.next = newNode
 	}
-	list.inserted++
+	list.size++
 }
 
 // AddOnIndex adiciona elemento em posição específica
@@ -136,7 +134,7 @@ func (list *LinkedList) Add(val int) {
 // 3. Senão: percorrer até posição anterior e inserir
 // 4. Incrementar contador
 func (list *LinkedList) AddOnIndex(val int, index int) error {
-	if index >= 0 && index <= list.inserted {
+	if index >= 0 && index <= list.size {
 		if index == 0 {
 			// Inserção no início - O(1)
 			list.AddFirst(val)
@@ -153,10 +151,10 @@ func (list *LinkedList) AddOnIndex(val int, index int) error {
 		// Insere novo nó entre aux e aux.next
 		newNode.next = aux.next
 		aux.next = newNode
-		list.inserted++
+		list.size++
 		return nil
 	} else {
-		return errors.New(fmt.Sprintf("Index inválido: %d", index))
+		return fmt.Errorf("index inválido: %d", index)
 	}
 }
 
@@ -164,12 +162,12 @@ func (list *LinkedList) AddOnIndex(val int, index int) error {
 // Complexidade: Θ(1)
 func (list *LinkedList) RemoveFirst() (int, error) {
 	if list.head == nil {
-		return 0, errors.New("Lista vazia")
+		return 0, fmt.Errorf("lista vazia")
 	}
 	
-	removedValue := list.head.val
+	removedValue := list.head.value
 	list.head = list.head.next
-	list.inserted--
+	list.size--
 	return removedValue, nil
 }
 
@@ -181,7 +179,7 @@ func (list *LinkedList) RemoveFirst() (int, error) {
 // 3. Senão: percorrer até posição anterior e reconectar ponteiros
 // 4. Decrementar contador
 func (list *LinkedList) Remove(index int) error {
-	if index >= 0 && index < list.inserted {
+	if index >= 0 && index < list.size {
 		if index == 0 {
 			// Remoção do primeiro nó - O(1)
 			_, err := list.RemoveFirst()
@@ -194,11 +192,11 @@ func (list *LinkedList) Remove(index int) error {
 			}
 			// Remove o nó reconectando os ponteiros
 			aux.next = aux.next.next
-			list.inserted--
+			list.size--
 			return nil
 		}
 	} else {
-		return errors.New(fmt.Sprintf("Index inválido: %d", index))
+		return fmt.Errorf("index inválido: %d", index)
 	}
 }
 
@@ -210,7 +208,7 @@ func (list *LinkedList) RemoveValue(value int) bool {
 	}
 	
 	// Caso especial: remover o primeiro nó
-	if list.head.val == value {
+	if list.head.value == value {
 		list.RemoveFirst()
 		return true
 	}
@@ -218,9 +216,9 @@ func (list *LinkedList) RemoveValue(value int) bool {
 	// Procurar o valor nos nós seguintes
 	current := list.head
 	for current.next != nil {
-		if current.next.val == value {
+		if current.next.value == value {
 			current.next = current.next.next
-			list.inserted--
+			list.size--
 			return true
 		}
 		current = current.next
@@ -233,7 +231,7 @@ func (list *LinkedList) RemoveValue(value int) bool {
 // Complexidade: Θ(1)
 func (list *LinkedList) Clear() {
 	list.head = nil
-	list.inserted = 0
+	list.size = 0
 }
 
 // Contains verifica se a lista contém o valor especificado
@@ -241,7 +239,7 @@ func (list *LinkedList) Clear() {
 func (list *LinkedList) Contains(value int) bool {
 	current := list.head
 	for current != nil {
-		if current.val == value {
+		if current.value == value {
 			return true
 		}
 		current = current.next
@@ -256,7 +254,7 @@ func (list *LinkedList) IndexOf(value int) int {
 	index := 0
 	
 	for current != nil {
-		if current.val == value {
+		if current.value == value {
 			return index
 		}
 		current = current.next
@@ -269,11 +267,11 @@ func (list *LinkedList) IndexOf(value int) int {
 // ToSlice retorna uma cópia dos elementos como slice
 // Complexidade: Θ(n)
 func (list *LinkedList) ToSlice() []int {
-	result := make([]int, 0, list.inserted)
+	result := make([]int, 0, list.size)
 	current := list.head
 	
 	for current != nil {
-		result = append(result, current.val)
+		result = append(result, current.value)
 		current = current.next
 	}
 	
@@ -295,7 +293,7 @@ func (list *LinkedList) String() string {
 		if !first {
 			result += ", "
 		}
-		result += fmt.Sprintf("%d", current.val)
+		result += fmt.Sprintf("%d", current.value)
 		current = current.next
 		first = false
 	}
@@ -329,7 +327,7 @@ func (list *LinkedList) Reverse() {
 // Usa algoritmo "tortoise and hare" (Floyd's algorithm)
 func (list *LinkedList) GetMiddle() (int, error) {
 	if list.head == nil {
-		return 0, errors.New("Lista vazia")
+		return 0, fmt.Errorf("lista vazia")
 	}
 	
 	slow := list.head
@@ -341,7 +339,7 @@ func (list *LinkedList) GetMiddle() (int, error) {
 		fast = fast.next.next
 	}
 	
-	return slow.val, nil
+	return slow.value, nil
 }
 
 // HasCycle detecta se há um ciclo na lista
@@ -381,9 +379,9 @@ func (list *LinkedList) RemoveDuplicates() {
 		
 		// Procura e remove duplicatas do valor atual
 		for runner.next != nil {
-			if runner.next.val == current.val {
+			if runner.next.value == current.value {
 				runner.next = runner.next.next
-				list.inserted--
+				list.size--
 			} else {
 				runner = runner.next
 			}

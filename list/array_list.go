@@ -1,7 +1,6 @@
 package list
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -67,7 +66,7 @@ func (list *ArrayList) Get(index int) (int, error) { // Θ(1)
 	if index >= 0 && index < list.size {
 		return list.elements[index], nil // Acesso direto O(1)
 	} else {
-		return -1, errors.New(fmt.Sprintf("Index inválido: %d", index))
+		return -1, fmt.Errorf("index inválido: %d", index)
 	}
 }
 
@@ -78,7 +77,7 @@ func (list *ArrayList) Set(index int, value int) error {
 		list.elements[index] = value
 		return nil
 	} else {
-		return errors.New(fmt.Sprintf("Index inválido: %d", index))
+		return fmt.Errorf("index inválido: %d", index)
 	}
 }
 
@@ -128,27 +127,22 @@ func (list *ArrayList) Add(value int) { // O(n), Ω(1)
 // 4. Inserir novo elemento na posição
 // 5. Incrementar contador
 func (list *ArrayList) AddOnIndex(val int, index int) error { // O(n), Ω(1)
-	// Validação: pode inserir no final (index == inserted)
-	if index >= 0 && index <= list.size {
-		// Expande array se necessário
-		if list.size == len(list.elements) {
-			list.doubleV()
-		}
-		
-		// Desloca elementos para a direita - O(n) no pior caso
-		for i := list.size; i > index; i-- {
-			list.elements[i] = list.elements[i-1]
-		}
-		
-		// Insere o novo elemento
-		list.elements[index] = val
-		list.size++
-		return nil
-	} else {
-		return errors.New(fmt.Sprintf("Index inválido: %d", index))
+	if index < 0 || index > list.size {
+		return fmt.Errorf("index inválido: %d", index)
 	}
-}
+	
+	if list.size == len(list.elements) {
+		list.doubleV()
+	}
 
+	for i := list.size; i > index; i-- {
+		list.elements[i] = list.elements[i-1]
+	}
+	
+	list.elements[index] = val
+	list.size++
+	return nil
+}
 // Remove remove elemento de posição específica
 // Complexidade: Ω(1) melhor caso, O(n) pior caso
 // Pseudocódigo:
@@ -164,7 +158,7 @@ func (list *ArrayList) Remove(index int) error { // Ω(1), O(n)
 		list.size--
 		return nil
 	} else {
-		return errors.New(fmt.Sprintf("Index inválido: %d", index))
+		return fmt.Errorf("index inválido: %d", index)
 	}
 }
 

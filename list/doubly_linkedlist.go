@@ -1,8 +1,8 @@
 package list
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 )
 
 // ============================================================================
@@ -106,7 +106,7 @@ func (list *DoublyLinkedList) Add(element int) {
 // Complexidade: O(n/2) - Otimizado para escolher direção mais próxima
 func (list *DoublyLinkedList) Get(index int) (int, error) {
 	if index < 0 || index >= list.size {
-		return 0, errors.New(fmt.Sprintf("Índice inválido: %d", index))
+		return 0, fmt.Errorf("índice inválido: %d", index)
 	}
 	
 	var current *DoublyNode
@@ -133,7 +133,7 @@ func (list *DoublyLinkedList) Get(index int) (int, error) {
 // Complexidade: O(n/2)
 func (list *DoublyLinkedList) Set(index int, value int) error {
 	if index < 0 || index >= list.size {
-		return errors.New(fmt.Sprintf("Índice inválido: %d", index))
+		return fmt.Errorf("índice inválido: %d", index)
 	}
 	
 	var current *DoublyNode
@@ -160,7 +160,7 @@ func (list *DoublyLinkedList) Set(index int, value int) error {
 // Complexidade: O(n/2)
 func (list *DoublyLinkedList) GetNode(index int) (*DoublyNode, error) {
 	if index < 0 || index >= list.size {
-		return nil, errors.New(fmt.Sprintf("Índice inválido: %d", index))
+		return nil, fmt.Errorf("índice inválido: %d", index)
 	}
 	
 	var current *DoublyNode
@@ -184,7 +184,7 @@ func (list *DoublyLinkedList) GetNode(index int) (*DoublyNode, error) {
 // Complexidade: O(n/2) - Otimizado
 func (list *DoublyLinkedList) AddOnIndex(element int, index int) error {
 	if index < 0 || index > list.size {
-		return errors.New(fmt.Sprintf("Índice inválido: %d", index))
+		return fmt.Errorf("índice inválido: %d", index)
 	}
 	
 	if index == 0 {
@@ -226,7 +226,7 @@ func (list *DoublyLinkedList) AddOnIndex(element int, index int) error {
 // Complexidade: Θ(1) - GRANDE VANTAGEM da Doubly LinkedList!
 func (list *DoublyLinkedList) RemoveNode(node *DoublyNode) (int, error) {
 	if node == nil {
-		return 0, errors.New("Nó inválido")
+		return 0, fmt.Errorf("nó inválido")
 	}
 	
 	removedData := node.data
