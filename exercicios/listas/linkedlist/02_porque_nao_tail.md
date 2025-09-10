@@ -58,7 +58,7 @@ Manter o `tail` atualizado em **todas as operações** adiciona complexidade sem
 ```go
 func (list *LinkedList) RemoveOnIndex(index int) {
     // Código normal de remoção...
-    
+
     // Complexidade adicional para manter tail:
     if removedNode == list.tail {
         // Precisa percorrer TODA a lista para encontrar o novo tail!
@@ -75,14 +75,14 @@ func (list *LinkedList) RemoveOnIndex(index int) {
 
 O `tail` **só otimiza inserções no final** (O(1)), mas a maioria das outras operações continua O(n):
 
-| Operação | Sem tail | Com tail | Benefício |
-|----------|----------|----------|----------|
-| Inserção no final | O(n) | O(1) ✅ | Significativo |
-| Inserção no meio | O(n) | O(n) ❌ | Nenhum |
-| Remoção do final | O(n) | O(n) ❌ | Nenhum |
-| Remoção do meio | O(n) | O(n) ❌ | Nenhum |
-| Busca | O(n) | O(n) ❌ | Nenhum |
-| Acesso por índice | O(n) | O(n) ❌ | Nenhum |
+| Operação          | Sem tail | Com tail | Benefício     |
+| ----------------- | -------- | -------- | ------------- |
+| Inserção no final | O(n)     | O(1) ✅  | Significativo |
+| Inserção no meio  | O(n)     | O(n) ❌  | Nenhum        |
+| Remoção do final  | O(n)     | O(n) ❌  | Nenhum        |
+| Remoção do meio   | O(n)     | O(n) ❌  | Nenhum        |
+| Busca             | O(n)     | O(n) ❌  | Nenhum        |
+| Acesso por índice | O(n)     | O(n) ❌  | Nenhum        |
 
 **Resultado:** Apenas **1 operação** se beneficia, mas **todas** ficam mais complexas.
 
@@ -108,55 +108,101 @@ list.tail = current
 
 ### Comparação: LinkedList vs DoublyLinkedList
 
-| Aspecto | LinkedList + tail | DoublyLinkedList |
-|---------|-------------------|------------------|
-| **Inserção no final** | O(1) ✅ | O(1) ✅ |
-| **Remoção do final** | O(n) ❌ | O(1) ✅ |
-| **Navegação reversa** | Impossível ❌ | O(n) ✅ |
-| **Memória por nó** | 1 ponteiro | 2 ponteiros |
-| **Complexidade código** | Alta ❌ | Média |
-| **Manutenção** | Difícil ❌ | Moderada |
+| Aspecto                 | LinkedList + tail | DoublyLinkedList |
+| ----------------------- | ----------------- | ---------------- |
+| **Inserção no final**   | O(1) ✅           | O(1) ✅          |
+| **Remoção do final**    | O(n) ❌           | O(1) ✅          |
+| **Navegação reversa**   | Impossível ❌     | O(n) ✅          |
+| **Memória por nó**      | 1 ponteiro        | 2 ponteiros      |
+| **Complexidade código** | Alta ❌           | Média            |
+| **Manutenção**          | Difícil ❌        | Moderada         |
 
-### Por que DoublyLinkedList é melhor?
+### LinkedList + tail ≠ DoublyLinkedList
+
+**IMPORTANTE:** Adicionar apenas um ponteiro `tail` à LinkedList **NÃO** a transforma em DoublyLinkedList!
+
+#### LinkedList com tail (Estrutura Híbrida Problemática)
 
 ```go
-type Node2P struct {
-    prev  *Node2P  // Permite voltar!
+type Node struct {
     value int
-    next  *Node2P
+    next  *Node  // Apenas um ponteiro!
+}
+
+type LinkedListWithTail struct {
+    head *Node
+    tail *Node  // Ponteiro extra na estrutura, mas nós ainda são simples
+    size int
 }
 ```
 
-**Vantagens:**
+#### DoublyLinkedList (Estrutura Completamente Diferente)
+
+```go
+type DoublyNode struct {
+    prev  *DoublyNode  // Ponteiro para nó anterior
+    value int
+    next  *DoublyNode  // Ponteiro para próximo nó
+}
+
+type DoublyLinkedList struct {
+    head *DoublyNode
+    tail *DoublyNode
+    size int
+}
+```
+
+**Diferenças fundamentais:**
+
+- **LinkedList + tail:** Nós têm apenas `next`, tail é só um ponteiro extra na estrutura
+- **DoublyLinkedList:** Cada nó tem `prev` E `next`, permitindo navegação bidirecional
+
+### Por que DoublyLinkedList é a solução correta?
+
+**Vantagens da DoublyLinkedList:**
+
 - **Remoção do final:** O(1) - `tail.prev.next = nil`
-- **Navegação bidirecional:** Pode ir e voltar
+- **Navegação bidirecional:** Pode ir e voltar pelos nós
 - **Manutenção consistente:** Ponteiros duplos facilitam atualizações
 - **Operações simétricas:** Inserção/remoção no início e fim são O(1)
+- **Remoção por referência:** O(1) quando se tem o nó
 
 ### Conclusão
 
-O `tail` em LinkedList simples oferece **benefício mínimo** (apenas inserção no final) mas adiciona **complexidade significativa** de manutenção.
+**Pontos principais:**
+
+1. **LinkedList + tail ≠ DoublyLinkedList**: São estruturas fundamentalmente diferentes
+2. **LinkedList + tail** oferece **benefício mínimo** (apenas inserção no final) mas adiciona **complexidade significativa**
+3. **DoublyLinkedList** é uma estrutura **completamente diferente** com nós bidirecionais
 
 **Recomendações:**
 
 ✅ **Use LinkedList simples quando:**
+
 - Operações são principalmente no início
 - Inserções no final são raras
 - Simplicidade é prioridade
+- Memória é muito limitada
 
 ✅ **Use DoublyLinkedList quando:**
-- Precisa de inserções eficientes no final
+
+- Precisa de inserções/remoções eficientes no final
 - Navegação bidirecional é útil
 - Remoções do final são frequentes
+- Remoção por referência de nó é necessária
 
 ❌ **Evite LinkedList + tail porque:**
+
 - Complexidade alta, benefício baixo
+- Ainda é O(n) para remoção do final
 - Manutenção propensa a erros
 - DoublyLinkedList é melhor alternativa
+- Cria confusão conceitual
 
 ### Analogia
 
 Imagine uma **fila de pessoas** onde:
+
 - **LinkedList:** Você só pode ver a pessoa à sua frente
 - **LinkedList + tail:** Você sabe quem é o último, mas não consegue chegar até ele facilmente
 - **DoublyLinkedList:** Você pode ver tanto à frente quanto atrás, facilitando movimento em ambas direções

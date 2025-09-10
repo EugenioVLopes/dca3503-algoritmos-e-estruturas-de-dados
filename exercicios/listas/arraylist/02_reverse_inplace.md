@@ -31,6 +31,7 @@ func (list *ArrayList) Reverse() {
 **Algoritmo:** A função percorre apenas **metade do array** (até `inserted/2`) e troca cada elemento da posição `i` com seu correspondente da posição `j = inserted - 1 - i`.
 
 **Por que apenas metade?**
+
 - Se percorrermos o array inteiro, cada elemento seria trocado duas vezes
 - Resultado: o array voltaria ao estado original
 - Percorrendo apenas metade, cada par é trocado exatamente uma vez
@@ -39,10 +40,10 @@ func (list *ArrayList) Reverse() {
 
 **Array inicial:** `[1, 2, 3, 4, 5]` (inserted = 5)
 
-| Iteração | i | j | Troca | Array após troca |
-|----------|---|---|-------|------------------|
-| 1 | 0 | 4 | 1 ↔ 5 | `[5, 2, 3, 4, 1]` |
-| 2 | 1 | 3 | 2 ↔ 4 | `[5, 4, 3, 2, 1]` |
+| Iteração | i   | j   | Troca | Array após troca  |
+| -------- | --- | --- | ----- | ----------------- |
+| 1        | 0   | 4   | 1 ↔ 5 | `[5, 2, 3, 4, 1]` |
+| 2        | 1   | 3   | 2 ↔ 4 | `[5, 4, 3, 2, 1]` |
 
 **Loop para:** i = 2, pois 2 ≥ 5/2 (2.5)
 
@@ -51,6 +52,7 @@ func (list *ArrayList) Reverse() {
 ### Análise de Complexidade
 
 - **Tempo:** O(n/2) = **O(n)**
+
   - Percorre metade dos elementos
   - Cada troca é O(1)
 
@@ -62,14 +64,17 @@ func (list *ArrayList) Reverse() {
 ### Casos Especiais
 
 **Array vazio:** `inserted = 0`
+
 - Loop não executa (0 < 0/2 é falso)
 - Array permanece vazio ✅
 
 **Array com 1 elemento:** `inserted = 1`
+
 - Loop não executa (0 < 1/2 é falso)
 - Array permanece inalterado ✅
 
 **Array com 2 elementos:** `inserted = 2`
+
 - Loop executa 1 vez (0 < 2/2)
 - Troca posições 0 e 1 ✅
 
@@ -83,12 +88,12 @@ func (list *ArrayList) Reverse() {
 
 ### Comparação com Outras Abordagens
 
-| Abordagem | Tempo | Espaço | In-place |
-|-----------|-------|--------|-----------|
-| Troca de extremidades | O(n) | O(1) | ✅ |
-| Array auxiliar | O(n) | O(n) | ❌ |
-| Recursão | O(n) | O(n) | ❌ |
-| Stack | O(n) | O(n) | ❌ |
+| Abordagem             | Tempo | Espaço | In-place |
+| --------------------- | ----- | ------ | -------- |
+| Troca de extremidades | O(n)  | O(1)   | ✅       |
+| Array auxiliar        | O(n)  | O(n)   | ❌       |
+| Recursão              | O(n)  | O(n)   | ❌       |
+| Stack                 | O(n)  | O(n)   | ❌       |
 
 ### Teste da Função
 
@@ -98,7 +103,7 @@ func main() {
         values:   []int{1, 2, 3, 4, 5, 0, 0, 0},
         inserted: 5,
     }
-    
+
     fmt.Println("Antes:", list.values[:list.inserted]) // [1 2 3 4 5]
     list.Reverse()
     fmt.Println("Depois:", list.values[:list.inserted]) // [5 4 3 2 1]
